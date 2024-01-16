@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
 import java.util.Date;
 
 @Component
@@ -20,8 +23,26 @@ public class JwtUtils {
     @Value("${app.jwtExpiration}")
     private int jwtExpiration;
 
-    private Key key(){
-        return Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtSecret));
+//    private Key key(){
+//        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+//    }
+
+    private KeyPair generateEcKeyPair() {
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
+            keyPairGenerator.initialize(256); // You can adjust the key size as needed
+            return keyPairGenerator.generateKeyPair();
+        } catch (Exception e) {
+            throw new SignatureException("Error generating EC key pair", e);
+        }
+    }
+
+    private PrivateKey getEcPrivateKey() {
+        return generateEcKeyPair().getPrivate();
+    }
+
+    private Key key() {
+        return getEcPrivateKey();
     }
 
     public String generateJwtToken(Authentication authentication){
@@ -30,7 +51,7 @@ public class JwtUtils {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime()+jwtExpiration))
-                .signWith(key(), SignatureAlgorithm.HS256)
+                .signWith(key(), SignatureAlgorithm.ES256)
                 .compact();
     }
 
