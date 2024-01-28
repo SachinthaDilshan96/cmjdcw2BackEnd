@@ -10,4 +10,6 @@ import java.util.List;
 public interface ProductService {
     List<ProductResponseDto> getProductsByCategory(int id);
     ProductResponseDto saveProduct(ProductRequestDto productRequestDto);
+    ProductResponseDto getProduct(int id);
+    ProductResponseDto updateProduct(int id, ProductRequestDto productRequestDto);
 }

@@ -19,9 +19,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public int getNextCategoryId() {
         int lastId = categoryRepository.getLastID();
-        if (lastId>0)
-            return lastId++;
-        return 0;
+        return ++lastId;
     }
 
     @Override

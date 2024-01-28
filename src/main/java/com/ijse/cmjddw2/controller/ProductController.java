@@ -26,11 +26,32 @@ public class ProductController {
     }
 
     @GetMapping("/category/{id}/products")
-    public ResponseEntity<?> getProductsByCategory(@PathVariable int catID){
-        List<ProductResponseDto> responseDtos = productService.getProductsByCategory(catID);
+    public ResponseEntity<?> getProductsByCategory(@PathVariable int id){
+        List<ProductResponseDto> responseDtos = productService.getProductsByCategory(id);
         if (responseDtos != null){
             return ResponseEntity.ok().body(responseDtos);
         }
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<?> getProduct(@PathVariable int id){
+        ProductResponseDto productResponseDto = productService.getProduct(id);
+        if (productResponseDto != null){
+            return ResponseEntity.ok().body(productResponseDto);
+        }else{
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+    @PutMapping("/products/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable int id, @RequestBody ProductRequestDto productRequestDto){
+        ProductResponseDto productResponseDto = productService.updateProduct(id,productRequestDto);
+        if (productResponseDto != null){
+            return ResponseEntity.ok().body(productResponseDto);
+        }else{
+            return ResponseEntity.noContent().build();
+        }
+    }
+
 }

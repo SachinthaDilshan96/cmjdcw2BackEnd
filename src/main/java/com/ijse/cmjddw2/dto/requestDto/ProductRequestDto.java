@@ -16,4 +16,5 @@ public class ProductRequestDto {
     private int categoryId;
     private int qty;
     private double unitPrice;
+    private Date expireDate;
 }
