@@ -3,6 +3,7 @@ package com.ijse.cmjddw2.service.impl;
 import com.ijse.cmjddw2.dto.requestDto.OrderRequestDto;
 import com.ijse.cmjddw2.dto.requestDto.ProductRequestDto;
 import com.ijse.cmjddw2.dto.responseDto.OrderResponseDto;
+import com.ijse.cmjddw2.dto.responseDto.StatResponseDto;
 import com.ijse.cmjddw2.entity.OrderEntity;
 import com.ijse.cmjddw2.entity.ProductEntity;
 import com.ijse.cmjddw2.repository.OrderRepository;
@@ -11,9 +12,11 @@ import com.ijse.cmjddw2.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 @Service
@@ -56,5 +59,24 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderEntity> getAllOrders() {
         return null;
+    }
+
+    @Override
+    public StatResponseDto getOrdersBetween(LocalDateTime start, LocalDateTime end) {
+        List<OrderEntity>  orderEntities =  orderRepository.getOrderEntitiesForLastDay(start,end);
+        StatResponseDto statResponseDto = new StatResponseDto();
+        statResponseDto.setLastDayOrderCount(orderEntities.size());
+        double total = 0;
+        for (OrderEntity order:orderEntities){
+            total+=order.getTotal();
+        }
+        statResponseDto.setLastDayTotalSales(total);
+        List<ProductEntity> productEntities = productRepository.getLowStockProducts();
+        statResponseDto.setTotalLowStocks(productEntities.size());
+        List<ProductEntity> todayExpiringProducts = productRepository.getTodayExpiringProducts(Timestamp.valueOf(start).getTime());
+        statResponseDto.setTodayExpires(todayExpiringProducts.size());
+        long totalProducts = productRepository.count();
+        statResponseDto.setTotalProducts(totalProducts);
+        return statResponseDto;
     }
 }
