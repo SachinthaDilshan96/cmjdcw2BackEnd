@@ -121,4 +121,22 @@ public class ProductServiceImpl implements ProductService {
         }
         return null;
     }
+
+    @Override
+    public List<ProductResponseDto> getAllProducts() {
+        List<ProductEntity> productEntities = productRepository.findAll();
+        List<ProductResponseDto> products = new ArrayList<>();
+        for (ProductEntity product:productEntities){
+            ProductResponseDto responseDto = new ProductResponseDto();
+            responseDto.setId(product.getProductId());
+            responseDto.setName(product.getName());
+            responseDto.setCategory(product.getCategory().getId());
+            responseDto.setQty(product.getQty());
+            responseDto.setInitialQty(product.getInitialQty());
+            responseDto.setExpireDate(product.getExpireDate());
+            responseDto.setUnitPrice(product.getUnitPrice());
+            products.add(responseDto);
+        }
+        return products;
+    }
 }

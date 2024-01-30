@@ -1,7 +1,7 @@
 package com.ijse.cmjddw2.service.impl;
 
 import com.ijse.cmjddw2.dto.requestDto.OrderRequestDto;
-import com.ijse.cmjddw2.dto.requestDto.ProductRequestDto;
+import com.ijse.cmjddw2.dto.responseDto.DailySalesResponseDto;
 import com.ijse.cmjddw2.dto.responseDto.OrderResponseDto;
 import com.ijse.cmjddw2.dto.responseDto.StatResponseDto;
 import com.ijse.cmjddw2.entity.OrderEntity;
@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -63,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public StatResponseDto getOrdersBetween(LocalDateTime start, LocalDateTime end) {
-        List<OrderEntity>  orderEntities =  orderRepository.getOrderEntitiesForLastDay(start,end);
+        List<OrderEntity>  orderEntities =  orderRepository.getOrderEntitiesForThePeriod(start,end);
         StatResponseDto statResponseDto = new StatResponseDto();
         statResponseDto.setLastDayOrderCount(orderEntities.size());
         double total = 0;
@@ -78,5 +75,18 @@ public class OrderServiceImpl implements OrderService {
         long totalProducts = productRepository.count();
         statResponseDto.setTotalProducts(totalProducts);
         return statResponseDto;
+    }
+
+    @Override
+    public List<DailySalesResponseDto> getOrdersForLastWeek(LocalDateTime start, LocalDateTime end) {
+        List<Object[]>  orderEntities =  orderRepository.getOrderEntitiesForLastWeek(start,end);
+        List<DailySalesResponseDto> responseDtos = new ArrayList<>();
+        for (Object[] order:orderEntities){
+            DailySalesResponseDto salesResponseDto =  new DailySalesResponseDto();
+            salesResponseDto.setDate(Timestamp.valueOf((LocalDateTime) order[0]).getTime());
+            salesResponseDto.setSales((Double) order[1]);
+            responseDtos.add(salesResponseDto);
+        }
+        return responseDtos;
     }
 }

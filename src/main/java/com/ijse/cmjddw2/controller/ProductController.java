@@ -54,4 +54,14 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/products")
+    public ResponseEntity<?> getAllProducts(){
+        List<ProductResponseDto> productResponseDtos = productService.getAllProducts();
+        if (productResponseDtos != null){
+            return ResponseEntity.ok().body(productResponseDtos);
+        }else{
+            return ResponseEntity.noContent().build();
+        }
+    }
+
 }

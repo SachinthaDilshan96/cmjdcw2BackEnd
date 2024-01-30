@@ -12,4 +12,5 @@ public interface ProductService {
     ProductResponseDto saveProduct(ProductRequestDto productRequestDto);
     ProductResponseDto getProduct(int id);
     ProductResponseDto updateProduct(int id, ProductRequestDto productRequestDto);
+    List<ProductResponseDto> getAllProducts();
 }

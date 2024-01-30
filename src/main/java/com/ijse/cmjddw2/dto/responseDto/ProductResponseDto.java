@@ -15,6 +15,7 @@ public class ProductResponseDto {
     private int id;
     private String name;
     private int qty;
+    private int initialQty;
     private int category;
     private double unitPrice;
     private long expireDate;
