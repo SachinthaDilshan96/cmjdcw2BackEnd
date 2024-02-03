@@ -9,4 +9,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CategoryRequestDto {
     private String categoryName;
+    private String addedBy;
 }

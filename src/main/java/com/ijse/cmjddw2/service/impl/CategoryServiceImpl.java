@@ -43,6 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
             CategoryEntity category = new CategoryEntity();
             category.setName(dto.getCategoryName());
             category.setAddedOn(new Date().getTime());
+            category.setAddedBy(dto.getAddedBy());
             return categoryRepository.save(category);
         }
         return null;
